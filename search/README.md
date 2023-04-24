@@ -11,7 +11,7 @@ Create a Google Search clone
 
 :white_check_mark:  Search queries take to the Google search results for that page
 
-:black_large_square: Advanced Search 
+:white_check_mark: Advanced Search 
 
 :white_check_mark: Im feeling lucky
 
