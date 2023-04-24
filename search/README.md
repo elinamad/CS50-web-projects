@@ -1,6 +1,8 @@
 <h2>Project 0: Search</h2>
 
-<b>Project status</b> <code>in progress</code>
+<b>Project status</b> <code>Submitted</code>
+
+<p align="center"><img src="https://i.imgur.com/WQk9Y2y.gif"/></p>
 
 Create a Google Search clone
 
