@@ -2,6 +2,8 @@
 
 <b>Project status</b> <code>not started</code>
 
+Design a Wikipedia-like online encyclopedia.
+
 ---
 <b><h3>Requirements</h3></b>
 
