@@ -1,5 +1,5 @@
 # CS50 web projects
-My projects for [`CS50 web`](https://cs50.harvard.edu/web/2020/) web programming with Python and JavaScript course.
+My projects for [`CS50 web`](https://cs50.harvard.edu/web/2020/) programming with Python and JavaScript course.
 
 **Foundations**
 
