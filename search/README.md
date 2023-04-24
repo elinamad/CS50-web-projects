@@ -2,6 +2,8 @@
 
 <b>Project status</b> <code>in progress</code>
 
+Create a Google Search clone
+
 ---
 <b><h3>Requirements</h3></b>
 
