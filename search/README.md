@@ -9,12 +9,12 @@ Create a Google Search clone
 
 :white_check_mark: At least 3 pages - Google Search (index.html), Google Image Search and Google Advanced Search 
 
-:black_large_square: Search queries take to the Google search results for that page
+:white_check_mark:  Search queries take to the Google search results for that page
 
 :black_large_square: Advanced Search 
 
-:black_large_square: Im feeling lucky
+:white_check_mark: Im feeling lucky
 
-:black_large_square: CSS that resembles google aesthetics
+:white_check_mark: CSS that resembles google aesthetics
 
 
