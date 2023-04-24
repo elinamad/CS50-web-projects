@@ -2,9 +2,10 @@
 
 <b>Project status</b> <code>Submitted</code>
 
-<p align="center"><img src="https://i.imgur.com/WQk9Y2y.gif"/></p>
 
 Create a Google Search clone
+
+<p align="center"><img src="https://i.imgur.com/WQk9Y2y.gif"/></p>
 
 ---
 <b><h3>Requirements</h3></b>
