@@ -9,9 +9,9 @@
 
 :black_large_square: Search queries take to the Google search results for that page
 
-:black_large_square: Advanced Search (Find all pages with ..."all of these words","this exact word or phrase","any of these words" or "none of these words")
+:black_large_square: Advanced Search 
 
-:black_large_square: Im feeling lucky button
+:black_large_square: Im feeling lucky
 
 :black_large_square: CSS that resembles google aesthetics
 
