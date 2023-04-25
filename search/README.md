@@ -1,6 +1,6 @@
 <h2>Project 0: Search</h2>
 
-<b>Project status</b> <code>Submitted</code>
+<b>Project status</b> :white_check_mark: <code>Submitted</code>
 
 
 Create a Google Search clone

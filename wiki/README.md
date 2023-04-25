@@ -1,11 +1,11 @@
 <h2>Project 1: Wiki</h2>
 
-<b>Project status</b> <code>not started</code>
+<b>Project status</b> :black_large_square: <code>not started</code>
 
 Design a Wikipedia-like online encyclopedia.
 
 ---
-<b><h3>Requirements</h3></b>
+<b><h3>Project Specification</h3></b>
 
 :black_large_square: Entry Page
 
