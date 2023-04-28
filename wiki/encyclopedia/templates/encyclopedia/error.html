@@ -1,9 +1,12 @@
 {% extends "encyclopedia/layout.html" %}
 
 {% block title %}
-    {{ title }}
+    Error
 {% endblock %}
 
 {% block body %}
-    {{ content | safe }}
+
+    <h1>Error</h1>
+    <p>{{ message }}</p>
+
 {% endblock %}

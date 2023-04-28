@@ -1,6 +1,16 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+import markdown
 
 from . import util
+
+def convert_markdown(title):
+    content = util.get_entry(title)
+    markdowner =  markdown.Markdown()
+    if content == None:
+        return None
+    else:
+        return markdowner.convert(content)
+    
 
 
 def index(request):
@@ -10,16 +20,19 @@ def index(request):
 
 def entry(request, title):
     if title:
-        content = util.get_entry(title)
-        if content is None:
+        html_content = convert_markdown(title)
+        if html_content == None:
             return render(request,"encyclopedia/error.html",{
                 "message":"The requested page was not found."
             })
         else:
             return render(request, "encyclopedia/entry.html",{
                 "title":title,
-                "content":content
+                "content":html_content
             })
     else:
         return redirect('index')
+
+
+
 
