@@ -69,6 +69,31 @@ def search(request):
                 "message":"No entries were found"
                 
             })
+
+def new(request):
+    # open the page
+    if request.method == "GET":
+        return render(request, "encyclopedia/new.html")
+
+    # if submitting the content
+    else:
+        title = request.POST['title']
+        content = request.POST['content']
+
+        #check if the title already exists on the wiki
+        check_title = util.get_entry(title)
+        if check_title is not None:
+            return render(request,"encyclopedia/error.html",{
+                "message":"Page with this title already exsists"
+            })
+        #if page does not exists
+        else:
+            util.save_entry(title,content)
+            html_content = convert_markdown(title)
+            return render(request, "encyclopedia/entry.html",{
+                "title":title,
+                "content": html_content
+            })
         
 
             
