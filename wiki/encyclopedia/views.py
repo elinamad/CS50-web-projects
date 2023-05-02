@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 import markdown
+import random
 
 from . import util
 
@@ -116,6 +117,30 @@ def edit(request,title):
             "title":title,
             "content":html_content
         })
+
+
+def random_page(request):
+    #populate list with all entries
+    pages = util.list_entries()
+    #randomize an index number
+    index = random.randrange(len(pages))
+    #select the page with the randomized index
+    random_page = pages[index]
+
+    #render the page
+    html_content = convert_markdown(random_page)
+    if html_content == None:
+        return render(request,"encyclopedia/error.html",{
+             "message":"The requested page was not found."
+        })
+    else:
+        return render(request, "encyclopedia/entry.html",{
+            "title":random_page,
+            "content":html_content
+         })
+
+
+    
         
 
             
