@@ -1,6 +1,6 @@
 <h2>Project 1: Wiki</h2>
 
-<b>Project status</b> :black_large_square: <code>In progress</code>
+<b>Project status</b> :white_check_mark: <code>Submitted</code>
 
 Design a Wikipedia-like online encyclopedia.
 
