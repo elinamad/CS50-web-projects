@@ -21,6 +21,7 @@ def index(request):
         "entries": util.list_entries()
     })
 
+
 # Render entry page if it exists
 def entry(request, title):
     if title:
@@ -37,9 +38,9 @@ def entry(request, title):
     else:
         return redirect('index')
 
+
 # Search functionality.
 # Fixes needed: Make search case insensitive. Make so that 'CSS' and 'css' and 'Css' are the same queries
-
 def search(request):
     # if something was submitted in the search bar
     if request.method == "POST":
@@ -73,9 +74,9 @@ def search(request):
                 
             })
 
+
 # Create a new page
 # Fixes needed: Case insensitivity. Make so that 'css' and 'CSS' and 'Css' are all counted as the same title.
-
 def new(request):
     # open new page
     if request.method == "GET":
@@ -100,7 +101,9 @@ def new(request):
                 "title":title,
                 "content": html_content
             })
-        
+
+
+# edit entry page    
 def edit(request,title):
     #open edit page
     if request.method == "GET":
@@ -119,6 +122,7 @@ def edit(request,title):
         })
 
 
+# go to a random page
 def random_page(request):
     #populate list with all entries
     pages = util.list_entries()
