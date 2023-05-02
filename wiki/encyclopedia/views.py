@@ -36,7 +36,9 @@ def entry(request, title):
     else:
         return redirect('index')
 
-# Search functionality
+# Search functionality.
+# Fixes needed: Make search case insensitive. Make so that 'CSS' and 'css' and 'Css' are the same queries
+
 def search(request):
     # if something was submitted in the search bar
     if request.method == "POST":
@@ -70,8 +72,11 @@ def search(request):
                 
             })
 
+# Create a new page
+# Fixes needed: Case insensitivity. Make so that 'css' and 'CSS' and 'Css' are all counted as the same title.
+
 def new(request):
-    # open the page
+    # open new page
     if request.method == "GET":
         return render(request, "encyclopedia/new.html")
 
@@ -94,6 +99,23 @@ def new(request):
                 "title":title,
                 "content": html_content
             })
+        
+def edit(request,title):
+    #open edit page
+    if request.method == "GET":
+        return render(request,"encyclopedia/edit.html",{
+            "content": util.get_entry(title),
+            "title": title
+        })
+    # save changes
+    else:
+        content = request.POST['content']
+        util.save_entry(title,content)
+        html_content = convert_markdown(title)
+        return render(request,"encyclopedia/entry.html",{
+            "title":title,
+            "content":html_content
+        })
         
 
             
