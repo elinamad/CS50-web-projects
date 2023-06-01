@@ -1,6 +1,6 @@
 <h2>Project 2: Commerce</h2>
 
-<b>Project status</b> :black_large_square: <code>not started</code>
+<b>Project status</b> :black_large_square: <code>In Progress</code>
 
 Design an eBay-like e-commerce auction site that will allow users to post auction listings, place bids on listings, comment on those listings, and add listings to a “watchlist.”
 
