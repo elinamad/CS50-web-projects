@@ -2,6 +2,15 @@
 
 {% block body %}
     <h2>Active Listings</h2>
-
-    TODO
+    {{ message }}
+    {% for listing in listings %}
+    <div class="container">
+        <a href="{url 'listing' title=listings %}">{{ listing.title }}<a>
+        Description: {{ listing.description }}
+        Price: {{ listing.current_price }}
+        {% if listing.img %}
+            <img src="{{listing.img}}">
+        {% endif %}
+    </div>
+    {% endfor %}
 {% endblock %}
