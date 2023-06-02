@@ -2,15 +2,20 @@
 
 {% block body %}
     <h2>Active Listings</h2>
-    {{ message }}
-    {% for listing in listings %}
-    <div class="container">
-        <a href="{url 'listing' title=listings %}">{{ listing.title }}<a>
-        Description: {{ listing.description }}
-        Price: {{ listing.current_price }}
-        {% if listing.img %}
-            <img src="{{listing.img}}">
-        {% endif %}
+    <div class="listings">
+        {{ message }}
+        {% for listing in listings %}
+        <div class="listing">
+            <a href="{url 'listing_page' title=listing %}">{{ listing.title }}<a>
+                Description: {{ listing.description }}
+                Price: {{ listing.current_price }}
+                created: {{listing.created}}
+                seller: {{listing.user_id.username}}
+                {% if listing.img %}
+                    <img src="{{listing.img}}">
+                {% endif %}
+                <hr/>
+        </div>
+        {% endfor %}
     </div>
-    {% endfor %}
 {% endblock %}
