@@ -107,11 +107,66 @@ def newlisting(request):
         newlisting.save()
         return HttpResponseRedirect(reverse("index"))
 
+def listing(request,id):
+    listingDetails = Listings.objects.get(pk=id)
+    currentUser = request.user
+    isListingInWatchlist = False
+    if currentUser in listingDetails.watchlist.all():
+        isListingInWatchlist = True
+    else:
+        isListingInWatchlist = False
+    return render(request,"auctions/listing.html",{
+        "listing":listingDetails,
+        "isListingInWatchList":isListingInWatchlist
+    })
 
-            
+@login_required
+def removeWatchList(request,id):
+    listingDetails = Listings.objects.get(pk=id)
+    currentUser = request.user
+    listingDetails.watchlist.remove(currentUser)
+    return HttpResponseRedirect(reverse("listing",args=(id, )))
+
+@login_required
+def addWatchList(request,id):
+    listingDetails = Listings.objects.get(pk=id)
+    currentUser = request.user
+    listingDetails.watchlist.add(currentUser)
+    return HttpResponseRedirect(reverse("listing",args=(id, )))
+
+@login_required
+def watchlist(request):
+    currentUser = request.user
+    listings = Listings.objects.filter(watchlist=currentUser)
+    if listings:
+        return render(request,"auctions/watchlist.html",{
+            "listings":listings
+        })
+    else:
+        message = "There are no watchlisted items"
+        return render(request,"auctions/watchlist.html",{
+            "message":message
+        })
+
+def categories(request):
+    categories = [choice[1] for choice in Listings.category_choices]
+    return render(request,"auctions/categories.html",{
+        "categories":categories
+    })
+
+def category(request,category):
+    listings=Listings.objects.filter(category=category)
+    if listings:
+        return render(request,"auctions/category.html",{
+            "listings":listings,
+            "category":category
+        })
+    else:
+        message = "There are no active listings in this category"
+        return render(request,"auctions/category.html",{
+            "message":message,
+            "category":category
+        })
 
 
 
-        
-
-    

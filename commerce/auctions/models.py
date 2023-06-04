@@ -21,6 +21,7 @@ class Listings(models.Model):
     category = models.CharField(max_length=20,choices=category_choices,default="fashion", blank=True)
     img = models.TextField(blank=True)
     created = models.DateTimeField(auto_now_add=True, blank=True)
+    watchlist = models.ManyToManyField(User, blank=True,null=True,related_name="user")
 
     def __str__(self):
         return f"{self.title}"
@@ -37,7 +38,4 @@ class Bids(models.Model):
     listing_id = models.ForeignKey(Listings,on_delete=models.CASCADE,related_name="bids")
     price = models.DecimalField(max_digits=6,decimal_places=2)
 
-class Watchlist(models.Model):
-    listing_id = models.ForeignKey(Listings,on_delete=models.CASCADE,related_name="user_watchlist")
-    user_id = models.ForeignKey(User,on_delete=models.CASCADE,related_name="users_watching")
 
