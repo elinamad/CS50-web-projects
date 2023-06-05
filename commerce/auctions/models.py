@@ -22,20 +22,27 @@ class Listings(models.Model):
     img = models.TextField(blank=True)
     created = models.DateTimeField(auto_now_add=True, blank=True)
     watchlist = models.ManyToManyField(User, blank=True,null=True,related_name="user")
+    last_bidder = models.ForeignKey(User,on_delete=models.CASCADE, blank=True,null=True,related_name="bidder")
 
     def __str__(self):
         return f"{self.title}"
 
 class Comments(models.Model):
     comment_id = models.AutoField(primary_key=True)
-    user_id = models.ForeignKey(User,on_delete=models.CASCADE,related_name="posted_comments")
-    listing_id = models.ForeignKey(Listings,on_delete=models.CASCADE,related_name="comments")
-    comment = models.TextField()
+    user_id = models.ForeignKey(User,on_delete=models.CASCADE,related_name="commenter")
+    listing_id = models.ForeignKey(Listings,on_delete=models.CASCADE,related_name="listing")
+    comment = models.CharField(max_length=200)
+
+    def __str__(self):
+        return f"{self.user_id}:{self.comment}"
 
 class Bids(models.Model):
     bid_id = models.AutoField(primary_key=True)
     user_id = models.ForeignKey(User,on_delete=models.CASCADE,related_name="user_bids")
     listing_id = models.ForeignKey(Listings,on_delete=models.CASCADE,related_name="bids")
     price = models.DecimalField(max_digits=6,decimal_places=2)
+
+    def __str__(self):
+        return f"{self.price}"
 
 

@@ -6,23 +6,57 @@
 <p>Description: {{listing.description}}</p>
 <p>Current price: {{listing.current_price}}</p>
 <p>Seller: {{listing.user_id}}</p>
+<p>last bidder: {{listing.last_bidder}}</p>
 <p>Date Listed: {{listing.created}}</p>
 {% if user.is_authenticated %}
+{% if isSeller %}
+{% else %}
     {% if isListingInWatchList %} 
+
         <form action="{% url 'removeWatchList' id=listing.listing_id %}",method="post">
             {% csrf_token %}
             <button type="submit">Remove from Watchlist</button>
         </form>
+
     {% else %} 
     <form action="{% url 'addWatchList' id=listing.listing_id %}",method="post">
         {% csrf_token %}
         <button type="submit">Add to Watchlist</button>
     </form>
     {% endif %} 
-
-<form>
-    <input type="text">
-    <button>Place bid</button>
-</form>
 {% endif %}
+
+    {% if isSeller %}
+            <form action = "{% url 'closeBids' id=listing.listing_id%}" method="post">
+                {% csrf_token %}
+                <button type="submit">End auction</button>
+            </form>
+        {% else %}
+            <form action ="{% url 'placebid' id=listing.listing_id %}" method="post">
+                {% csrf_token %}
+                <input type="text" name="placebid" placeholder="bid">
+                <button type="submit">Place bid</button>
+            </form>
+    {% endif %}
+
+
+
+{% endif %}
+
+<h2> comments</h2>
+{% if user.is_authenticated %} 
+    <form action="{% url 'addcomment' id=listing.listing_id%}" method ="post">
+        {% csrf_token %}
+        <input type="text" name="newComment" placeholder="comment">
+        <button type="submit">Add comment</button>
+    </form>
+{% endif %}
+{% if comments %}
+{% for comment in comments %} 
+    <p>{{comment}}</p>
+{% endfor %}
+{% else %}
+    there are no comments
+{% endif %}
+
 {% endblock %}

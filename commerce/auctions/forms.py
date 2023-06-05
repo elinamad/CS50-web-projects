@@ -11,5 +11,6 @@ class ListingForm(forms.Form):
     ]
     listing_category = forms.ChoiceField(choices=category_choices, initial="fashion", required=False)
     listing_description = forms.CharField(label="listing description", widget=forms.Textarea)
+    img = forms.CharField(label="image url",required=False)
 
     

@@ -12,6 +12,8 @@ from .models import Bids
 
 from .forms import ListingForm
 
+from decimal import Decimal
+
 
 def index(request):
 
@@ -111,13 +113,19 @@ def listing(request,id):
     listingDetails = Listings.objects.get(pk=id)
     currentUser = request.user
     isListingInWatchlist = False
+    isSeller = False
+    if listingDetails.user_id == currentUser:
+        isSeller = True
+    comments = Comments.objects.filter(listing_id = id)
     if currentUser in listingDetails.watchlist.all():
         isListingInWatchlist = True
     else:
         isListingInWatchlist = False
     return render(request,"auctions/listing.html",{
         "listing":listingDetails,
-        "isListingInWatchList":isListingInWatchlist
+        "isListingInWatchList":isListingInWatchlist,
+        "comments":comments,
+        "isSeller":isSeller
     })
 
 @login_required
@@ -167,6 +175,55 @@ def category(request,category):
             "message":message,
             "category":category
         })
+    
+def addcomment(request,id):
+    currentUser = request.user
+    listingDetails = Listings.objects.get(pk=id)
+    comment = request.POST['newComment']
+
+    newComment = Comments(
+        user_id = currentUser,
+        listing_id = listingDetails,
+        comment = comment
+    )
+    newComment.save()
+    return HttpResponseRedirect(reverse("listing",args=(id, )))
+
+def placebid(request,id):
+    currentUser = request.user
+    currentListing = Listings.objects.get(pk=id)
+    currentPrice = currentListing.current_price
+    bid = Decimal(request.POST['placebid'])
+    isSeller = False
+
+    if currentListing.user_id == currentUser:
+        isSeller = True
+
+    if bid > currentPrice and isSeller == False :
+        newBid = Bids(
+            user_id = currentUser,
+            listing_id = currentListing,
+            price = bid
+        )
+        newBid.save()
+    
+        currentListing.current_price = bid
+        currentListing.last_bidder = currentUser
+        currentListing.save()    
+
+    return HttpResponseRedirect(reverse("listing",args=(id, )))
+
+def closeBids(request,id):
+    currentListing = Listings.objects.get(pk=id)
+    if currentListing.last_bidder:
+        winner = currentListing.last_bidder
+        currentListing.isactive = False
+        currentListing.save()
+    else:
+        currentListing.isactive = False
+        currentListing.save()
+    return HttpResponseRedirect(reverse("index"))
+
 
 
 
