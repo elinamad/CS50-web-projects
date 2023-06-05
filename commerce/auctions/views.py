@@ -175,7 +175,8 @@ def category(request,category):
             "message":message,
             "category":category
         })
-    
+
+@login_required   
 def addcomment(request,id):
     currentUser = request.user
     listingDetails = Listings.objects.get(pk=id)
@@ -189,6 +190,7 @@ def addcomment(request,id):
     newComment.save()
     return HttpResponseRedirect(reverse("listing",args=(id, )))
 
+@login_required
 def placebid(request,id):
     currentUser = request.user
     currentListing = Listings.objects.get(pk=id)
@@ -213,6 +215,7 @@ def placebid(request,id):
 
     return HttpResponseRedirect(reverse("listing",args=(id, )))
 
+@login_required
 def closeBids(request,id):
     currentListing = Listings.objects.get(pk=id)
     if currentListing.last_bidder:
@@ -223,6 +226,36 @@ def closeBids(request,id):
         currentListing.isactive = False
         currentListing.save()
     return HttpResponseRedirect(reverse("index"))
+
+def history(request):
+    listings = Listings.objects.all().filter(isactive = False).order_by('created')
+    if listings.exists():
+        return render(request,"auctions/history.html",{
+            "listings": listings,
+
+        })
+    else:
+        return render(request,"auctions/index.html",{
+            "message": "Nothing to show"
+        })
+
+@login_required
+def mylistings(request):
+    currentUser = request.user
+    userListings = Listings.objects.all().filter(user_id=currentUser, isactive=True).order_by('-created')
+    if userListings:
+        return render(request,"auctions/mylistings.html",{
+            "listings":userListings,
+            "user":currentUser
+        })
+    else:
+        message = "You don't have any active listings"
+        return render(request,"auctions/mylistings.html",{
+            "message":message,
+            "user":currentUser
+        })
+
+
 
 
 

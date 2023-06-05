@@ -1,0 +1,20 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>{{user}}'s active listings</h2>
+    <div class="listings">
+        {{ message }}
+        {% for listing in listings %}
+        <div class="listing">
+            <a href="{%url 'listing' id=listing.listing_id %}">{{ listing }}<a>
+                Description: {{ listing.description }}
+                Price: {{ listing.current_price }}
+                created: {{listing.created}}
+                {% if listing.img %}
+                    <img src="{{listing.img}}">
+                {% endif %}
+                <hr/>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}
