@@ -98,13 +98,15 @@ def newlisting(request):
             description = form.cleaned_data['listing_description']
             category = form.cleaned_data['listing_category']
             price = form.cleaned_data['listing_price']
+            img  = form.cleaned_data['img']
         newlisting = Listings(
             user_id = request.user,
             title = title,
             description = description,
             category = category,
             current_price = price,
-            isactive = True
+            isactive = True,
+            img = img
         )
         newlisting.save()
         return HttpResponseRedirect(reverse("index"))
