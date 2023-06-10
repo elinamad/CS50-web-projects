@@ -35,18 +35,71 @@ function load_mailbox(mailbox) {
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3 id ="title">${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
-  //If sent emails
+  //SENT
   let title = document.querySelector('#title');
   if (title.innerHTML == "Sent"){
-    console.log('sent emails');
+    fetch('emails/sent')
+    .then(response => response.json())
+    .then(emails => {
+      console.log(emails);
+
+      for(i=0;i<emails.length;i++){
+
+        let emailSender = emails[i].sender;
+        let emailSubject = emails[i].subject;
+
+        //Email container
+        let container = document.createElement('div');
+        container.setAttribute('id',`email-container-${i}`);
+        container.setAttribute('class','email-container');
+        document.querySelector('#emails-view').append(container);
+
+        //sender container
+        let senderContainer = document.createElement('div');
+        senderContainer.setAttribute('id',`sender-container-${i}`);
+        senderContainer.setAttribute('class','item-container');
+        document.querySelector(`#email-container-${i}`).append(senderContainer);
+
+        //sender container
+        let subjectContainer = document.createElement('div');
+        subjectContainer.setAttribute('id',`subject-container-${i}`);
+        subjectContainer.setAttribute('class','item-container');
+        document.querySelector(`#email-container-${i}`).append(subjectContainer);
+
+        //Sender label
+        let senderText = document.createElement('p');
+        senderText.setAttribute('class','label');
+        senderText.innerHTML = 'From:';
+        document.querySelector(`#sender-container-${i}`).append(senderText);
+      
+        //Sender
+        let sender = document.createElement('p');
+        sender.setAttribute('class','sender');
+        sender.innerHTML = emailSender;
+        document.querySelector(`#sender-container-${i}`).append(sender);
+
+        //Subject label
+        let subjectText = document.createElement('p');
+        subjectText.setAttribute('class','label');
+        subjectText.innerHTML = 'Subject:'
+        document.querySelector(`#subject-container-${i}`).append(subjectText);
+
+        //Subject
+        let subject = document.createElement('p');
+        subject.setAttribute('class',`subject-${i}`);
+        subject.innerHTML = emailSubject;
+        document.querySelector(`#subject-container-${i}`).append(subject);
+
+      }
+    })
   }
 
-  //if inbox
+  //INBOX
   if (title.innerHTML == 'Inbox'){
     console.log('inbox');
   }
 
-  //if archive
+  //ARCHIVE
   if (title.innerHTML == 'Archive'){
     console.log('archive');
   }
