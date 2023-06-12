@@ -1,3 +1,5 @@
+let isEvent = false;
+
 document.addEventListener('DOMContentLoaded', function() {
 
   // Use buttons to toggle between views
@@ -9,6 +11,9 @@ document.addEventListener('DOMContentLoaded', function() {
   // By default, load the inbox
   load_mailbox('inbox');
 
+  //by default, hide view email
+  document.querySelector('#email-view').style.display = 'none';
+
   //send email button
   document.querySelector('#compose-form').addEventListener('submit',()=> send_email(event));
 
@@ -18,6 +23,7 @@ function compose_email() {
 
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#email-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
 
   // Clear out composition fields
@@ -30,6 +36,7 @@ function load_mailbox(mailbox) {
   
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
+  document.querySelector('#email-view').style.display='none';
   document.querySelector('#compose-view').style.display = 'none';
 
   // Show the mailbox name
@@ -45,50 +52,76 @@ function load_mailbox(mailbox) {
 
       for(i=0;i<emails.length;i++){
 
-        let emailSender = emails[i].sender;
+        let emailRecipients = emails[i].recipients;
         let emailSubject = emails[i].subject;
+        let emailTimestamp = emails[i].timestamp;
+        let emailRead = emails[i].read;
+        let emailID = emails[i].id;
 
         //Email container
         let container = document.createElement('div');
-        container.setAttribute('id',`email-container-${i}`);
+        container.setAttribute('id',`email-container-${emailID}`);
         container.setAttribute('class','email-container');
         document.querySelector('#emails-view').append(container);
 
-        //sender container
-        let senderContainer = document.createElement('div');
-        senderContainer.setAttribute('id',`sender-container-${i}`);
-        senderContainer.setAttribute('class','item-container');
-        document.querySelector(`#email-container-${i}`).append(senderContainer);
+        //recipient container
+        let recipientsContainer = document.createElement('div');
+        recipientsContainer.setAttribute('id',`recipients-container-${emailID}`);
+        recipientsContainer.setAttribute('class','item-container');
+        document.querySelector(`#email-container-${emailID}`).append(recipientsContainer);
 
-        //sender container
+        //subject container
         let subjectContainer = document.createElement('div');
-        subjectContainer.setAttribute('id',`subject-container-${i}`);
+        subjectContainer.setAttribute('id',`subject-container-${emailID}`);
         subjectContainer.setAttribute('class','item-container');
-        document.querySelector(`#email-container-${i}`).append(subjectContainer);
+        document.querySelector(`#email-container-${emailID}`).append(subjectContainer);
 
-        //Sender label
-        let senderText = document.createElement('p');
-        senderText.setAttribute('class','label');
-        senderText.innerHTML = 'From:';
-        document.querySelector(`#sender-container-${i}`).append(senderText);
+        //timestamp container
+        let timestampContainer = document.createElement('div');
+        timestampContainer.setAttribute('id',`timestamp-container-${emailID}`);
+        timestampContainer.setAttribute('class','item-container');
+        document.querySelector(`#email-container-${emailID}`).append(timestampContainer);
+
+        //recipients label
+        let recipientsText = document.createElement('p');
+        recipientsText.setAttribute('class','label');
+        recipientsText.innerHTML = 'To:';
+        document.querySelector(`#recipients-container-${emailID}`).append(recipientsText);
       
-        //Sender
-        let sender = document.createElement('p');
-        sender.setAttribute('class','sender');
-        sender.innerHTML = emailSender;
-        document.querySelector(`#sender-container-${i}`).append(sender);
+        //Recipients
+        let recipients = document.createElement('p');
+        recipients.innerHTML = emailRecipients;
+        document.querySelector(`#recipients-container-${emailID}`).append(recipients);
 
         //Subject label
         let subjectText = document.createElement('p');
         subjectText.setAttribute('class','label');
         subjectText.innerHTML = 'Subject:'
-        document.querySelector(`#subject-container-${i}`).append(subjectText);
+        document.querySelector(`#subject-container-${emailID}`).append(subjectText);
 
         //Subject
         let subject = document.createElement('p');
-        subject.setAttribute('class',`subject-${i}`);
         subject.innerHTML = emailSubject;
-        document.querySelector(`#subject-container-${i}`).append(subject);
+        document.querySelector(`#subject-container-${emailID}`).append(subject);
+
+        //timestamp label
+        let timestampText = document.createElement('p');
+        timestampText.setAttribute('class','label');
+        timestampText.innerHTML = 'Date:'
+        document.querySelector(`#timestamp-container-${emailID}`).append(timestampText);
+
+        //timestamp
+        let timestamp = document.createElement('p');
+        timestamp.innerHTML = emailTimestamp;
+        document.querySelector(`#timestamp-container-${emailID}`).append(timestamp);
+
+        //Apply read or unread styling
+        if (emailRead == false){
+          document.querySelector(`#email-container-${emailID}`).classList.add('unread');
+        }else{
+          document.querySelector(`#email-container-${emailID}`).classList.remove('unread');
+        }
+
 
       }
     })
@@ -96,15 +129,157 @@ function load_mailbox(mailbox) {
 
   //INBOX
   if (title.innerHTML == 'Inbox'){
-    console.log('inbox');
+    fetch('emails/inbox')
+    .then(response => response.json())
+    .then(emails => {
+      console.log(emails)
+
+      for (i=0;i<emails.length;i++){
+        let emailSender = emails[i].sender;
+        let emailRecipients = emails[i].recipients;
+        let emailSubject = emails[i].subject;
+        let emailTimestamp = emails[i].timestamp;
+        let emailRead = emails[i].read;
+        let emailID = emails[i].id;
+        let emailBody = emails[i].body;
+        let emailArchived = emails[i].archived;
+
+        //email container
+        let container = document.createElement('div');
+        container.setAttribute('id',`email-container-${emailID}`);
+        container.setAttribute('class','email-container');
+        document.querySelector('#emails-view').append(container);
+
+        //sender container
+        let senderContainer = document.createElement('div');
+        senderContainer.setAttribute('id',`sender-container-${emailID}`);
+        senderContainer.setAttribute('class','item-container');
+        document.querySelector(`#email-container-${emailID}`).append(senderContainer);
+
+        //subject container
+        let subjectContainer = document.createElement('div');
+        subjectContainer.setAttribute('id',`subject-container-${emailID}`);
+        subjectContainer.setAttribute('class','item-container');
+        document.querySelector(`#email-container-${emailID}`).append(subjectContainer);
+
+        //timestamp container
+        let timestampContainer = document.createElement('div');
+        timestampContainer.setAttribute('id',`timestamp-container-${emailID}`);
+        timestampContainer.setAttribute('class','item-container');
+        document.querySelector(`#email-container-${emailID}`).append(timestampContainer);
+
+        //sender label
+        let senderText = document.createElement('p');
+        senderText.setAttribute('class','label');
+        senderText.innerHTML= "From:";
+        document.querySelector(`#sender-container-${emailID}`).append(senderText);
+
+        //sender
+        let sender = document.createElement('p');
+        sender.innerHTML = emailSender;
+        document.querySelector(`#sender-container-${emailID}`).append(sender);
+
+        //subject label
+        let subjectText = document.createElement('p');
+        subjectText.setAttribute('class','label');
+        subjectText.innerHTML = "Subject:";
+        document.querySelector(`#subject-container-${emailID}`).append(subjectText);
+
+        //subject
+        let subject = document.createElement('p');
+        subject.innerHTML = emailSubject;
+        document.querySelector(`#subject-container-${emailID}`).append(subject);
+
+        //timestamp label
+        let timestampText = document.createElement('p');
+        timestampText.setAttribute('class','label');
+        timestampText.innerHTML = 'Date:';
+        document.querySelector(`#timestamp-container-${emailID}`).append(timestampText);
+
+        //timestamp
+        let timestamp = document.createElement('p');
+        timestamp.innerHTML = emailTimestamp;
+        document.querySelector(`#timestamp-container-${emailID}`).append(timestamp);
+
+        //apply read or unread styling
+        if (emailRead == false){
+          document.querySelector(`#email-container-${emailID}`).classList.toggle('unread');
+        }
+
+        //Open email
+          document.querySelector(`#email-container-${emailID}`).addEventListener('click',function(){
+            document.querySelector('#emails-view').style.display = 'none';
+            document.querySelector('#email-view').style.display = 'block';
+
+            if (emailRead == false){
+              fetch(`/emails/${emailID}`),{
+                method:'PUT',
+                body:JSON.stringify({
+                  read:true
+                })
+              }
+            }
+
+            document.querySelector('#email-view-sender').innerHTML = emailSender;
+            document.querySelector('#email-view-recipients').innerHTML = emailRecipients;
+            document.querySelector('#email-view-subject').innerHTML = emailSubject;
+            document.querySelector('#email-view-timestamp').innerHTML = emailTimestamp;
+            document.querySelector('#email-view-body').innerHTML = emailBody;
+
+            //Archive button
+
+            if (emailArchived === false){
+              document.querySelector('#btn-archive').innerHTML = "Archive";
+            }else{
+              document.querySelector('#btn-archive').innerHTML = "Unarchive";
+            }
+
+            document.querySelector('#btn-archive').addEventListener('click',function(){
+              if(emailArchived === false){
+                fetch(`/emails/${emailID}`, {
+                  method: 'PUT',
+                  body: JSON.stringify({
+                    archived:true
+                  })
+                })
+                document.querySelector('#btn-archive').innerHTML = "Unarchive";
+              }else{
+                fetch(`/emails/${emailID}`, {
+                  method:'PUT',
+                  body: JSON.stringify({
+                    archived:false
+                  })
+                })
+                document.querySelector('#btn-archive').innerHTML = "Archive";
+              }
+              
+            })
+  
+          })  
+      }
+    })
   }
 
   //ARCHIVE
   if (title.innerHTML == 'Archive'){
-    console.log('archive');
+    fetch('emails/archive')
+    .then(response => response.json())
+    .then(emails => {
+      console.log(emails);
+
+      for(i=0;i<emails.length;i++){
+        if (emails[i].archived == true){
+          //same code to display archived emails
+        } 
+      }
+    })
   }
 
 }
+
+
+
+
 
 function send_email(){
 
@@ -119,7 +294,7 @@ function send_email(){
     body: JSON.stringify({
       recipients:recipientsValue,
       subject:subjectValue,
-      body:bodyValue
+      body:bodyValue,
     })
   })
   .then(response => response.json())
