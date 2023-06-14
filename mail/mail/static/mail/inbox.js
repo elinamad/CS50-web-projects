@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function compose_email() {
-
   // Show compose view and hide other views
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#email-view').style.display = 'none';
@@ -39,6 +38,7 @@ function load_mailbox(mailbox) {
   document.querySelector('#email-view').style.display='none';
   document.querySelector('#compose-view').style.display = 'none';
 
+  document.querySelector('#emails-view').innerHTML='';
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3 id ="title">${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
 
@@ -57,6 +57,9 @@ function load_mailbox(mailbox) {
         let emailTimestamp = emails[i].timestamp;
         let emailRead = emails[i].read;
         let emailID = emails[i].id;
+        let emailSender = emails[i].sender;
+        let emailBody = emails[i].body;
+        let emailArchived = emails[i].archived;
 
         //Email container
         let container = document.createElement('div');
@@ -121,6 +124,31 @@ function load_mailbox(mailbox) {
         }else{
           document.querySelector(`#email-container-${emailID}`).classList.remove('unread');
         }
+
+        //open email
+        document.querySelector(`#email-container-${emailID}`).addEventListener('click',function(){
+          document.querySelector(`#emails-view`).style.display = 'none';
+          document.querySelector('#email-view').style.display = 'block';
+          document.querySelector('#btn-archive').style.display ='none';
+          document.querySelector('#btn-reply').style.display='none';
+
+          if (emailRead == false){
+            fetch(`emails/${emailID}`,{
+              method:'PUT',
+              body:JSON.stringify({
+                read:true
+              })
+            })
+          }
+
+          document.querySelector('#email-view-sender').innerHTML = emailSender;
+          document.querySelector('#email-view-recipients').innerHTML = emailRecipients;
+          document.querySelector('#email-view-subject').innerHTML = emailSubject;
+          document.querySelector('#email-view-timestamp').innerHTML = emailTimestamp;
+          document.querySelector('#email-view-body').innerHTML = emailBody;
+
+          
+        })
 
 
       }
@@ -210,14 +238,16 @@ function load_mailbox(mailbox) {
           document.querySelector(`#email-container-${emailID}`).addEventListener('click',function(){
             document.querySelector('#emails-view').style.display = 'none';
             document.querySelector('#email-view').style.display = 'block';
+            document.querySelector('#btn-archive').style.display ='flex';
+            document.querySelector('#btn-reply').style.display = 'flex';
 
             if (emailRead == false){
-              fetch(`/emails/${emailID}`),{
+              fetch(`/emails/${emailID}`,{
                 method:'PUT',
                 body:JSON.stringify({
                   read:true
                 })
-              }
+              })
             }
 
             document.querySelector('#email-view-sender').innerHTML = emailSender;
@@ -234,7 +264,7 @@ function load_mailbox(mailbox) {
               document.querySelector('#btn-archive').innerHTML = "Unarchive";
             }
 
-            document.querySelector('#btn-archive').addEventListener('click',function(){
+            document.querySelector('#btn-archive').onclick = function(){
               if(emailArchived === false){
                 fetch(`/emails/${emailID}`, {
                   method: 'PUT',
@@ -251,9 +281,27 @@ function load_mailbox(mailbox) {
                   })
                 })
                 document.querySelector('#btn-archive').innerHTML = "Archive";
+
               }
-              
-            })
+              document.querySelector('#emails-view').innerHTML = '';
+
+              let delay = 250
+              setTimeout(function(){
+                load_mailbox('inbox');
+              },delay);
+            }
+
+            //reply button
+            document.querySelector('#btn-reply').onclick = function(){
+              document.querySelector('#email-view').style.display = 'none';
+              document.querySelector('#emails-view').style.display = 'none';
+              document.querySelector('#compose-view').style.display = 'block';
+
+              document.querySelector('#compose-recipients').value = emailSender;
+              document.querySelector('#compose-subject').value = `Re:${emailSubject}`;
+              document.querySelector('#compose-body').value = `on ${emailTimestamp} ${emailSender} wrote: ${emailBody}`;
+            }
+            
   
           })  
       }
@@ -267,18 +315,131 @@ function load_mailbox(mailbox) {
     .then(emails => {
       console.log(emails);
 
-      for(i=0;i<emails.length;i++){
-        if (emails[i].archived == true){
-          //same code to display archived emails
-        } 
+      if(emails){
+        for(i=0;i<emails.length;i++){
+          let emailSender = emails[i].sender;
+          let emailId = emails[i].id;
+          let emailRecipients = emails[i].recipients;
+          let emailSubject = emails[i].subject;
+          let emailTimestamp = emails[i].timestamp;
+          let emailBody = emails[i].body;
+          let emailArchived = emails[i].archived;
+
+          //email container
+          let container = document.createElement('div');
+          container.setAttribute('id',`email-container-${emailId}`);
+          container.setAttribute('class','email-container');
+          document.querySelector('#emails-view').append(container);
+
+          //sender container
+          let senderContainer = document.createElement('div');
+          senderContainer.setAttribute('id',`sender-container-${emailId}`);
+          senderContainer.setAttribute('class','item-container');
+          document.querySelector(`#email-container-${emailId}`).append(senderContainer);
+
+          //subject container
+          let subjectContainer = document.createElement('div');
+          subjectContainer.setAttribute('id',`subject-container-${emailId}`);
+          subjectContainer.setAttribute('class','item-container');
+          document.querySelector(`#email-container-${emailId}`).append(subjectContainer);
+
+          //timestamp container
+          let timestampContainer = document.createElement('div');
+          timestampContainer.setAttribute('id',`timestamp-container-${emailId}`);
+          timestampContainer.setAttribute('class','item-container');
+          document.querySelector(`#email-container-${emailId}`).append(timestampContainer);
+
+          //sender label
+          let senderText = document.createElement('p');
+          senderText.setAttribute('class','label');
+          senderText.innerHTML = 'From:'
+          document.querySelector(`#sender-container-${emailId}`).append(senderText);
+
+          //sender
+          let sender = document.createElement('p');
+          sender.innerHTML = emailSender;
+          document.querySelector(`#sender-container-${emailId}`).append(sender);
+
+          //subject label
+          let subjectText  = document.createElement('p');
+          subjectText.setAttribute('class','label');
+          subjectText.innerHTML = "Subject:";
+          document.querySelector(`#subject-container-${emailId}`).append(subjectText);
+
+          //subject
+          let subject = document.createElement('p');
+          subject.innerHTML = emailSubject;
+          document.querySelector(`#subject-container-${emailId}`).append(subject);
+
+          //timestamp label
+          let timestampText = document.createElement('p');
+          timestampText.setAttribute('class','label');
+          timestampText.innerHTML = "Date:";
+          document.querySelector(`#timestamp-container-${emailId}`).append(timestampText);
+
+          //timestamp
+          let timestamp = document.createElement('p');
+          timestamp.innerHTML = emailTimestamp;
+          document.querySelector(`#timestamp-container-${emailId}`).append(timestamp);
+
+        //Open email
+
+        document.querySelector(`#email-container-${emailId}`).addEventListener('click',function(){
+          document.querySelector('#emails-view').style.display = 'none';
+          document.querySelector('#email-view').style.display = 'block';
+          document.querySelector('#btn-archive').style.display ='flex';
+          document.querySelector('#btn-reply').style.display ='none';
+
+          document.querySelector('#email-view-sender').innerHTML = emailSender;
+          document.querySelector('#email-view-recipients').innerHTML = emailRecipients;
+          document.querySelector('#email-view-subject').innerHTML = emailSubject;
+          document.querySelector('#email-view-timestamp').innerHTML = emailTimestamp;
+          document.querySelector('#email-view-body').innerHTML = emailBody;
+
+          //Archive button
+          if(emailArchived === false){
+            document.querySelector('#btn-archive').innerHTML = "Archive";
+          }else{
+            document.querySelector('#btn-archive').innerHTML = "Unarchive";
+          }
+
+            document.querySelector('#btn-archive').onclick = function(){
+              isEvent = true;
+              if(emailArchived ==false){
+                fetch(`/emails/${emailId}`, {
+                  method: 'PUT',
+                  body: JSON.stringify({
+                    archived:true
+                  })
+                })
+              }else{
+                fetch(`/emails/${emailId}`, {
+                  method: 'PUT',
+                  body: JSON.stringify({
+                    archived:false
+                  })
+                })
+              }
+              let delay = 250
+              setTimeout(function(){
+                load_mailbox('archive');
+              },delay);
+            }
+        
+          
+        })
       }
+      }else{
+        let error = document.createElement('p');
+        error.innerHTML = 'no archived emails';
+        document.querySelector('#emails-view').append(error);
+      }
+
+      
     })
   }
 
 }
-
-
-
 
 
 function send_email(){
@@ -295,6 +456,7 @@ function send_email(){
       recipients:recipientsValue,
       subject:subjectValue,
       body:bodyValue,
+      read:false,
     })
   })
   .then(response => response.json())

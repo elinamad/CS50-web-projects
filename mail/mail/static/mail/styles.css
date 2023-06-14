@@ -31,7 +31,7 @@ p{
     margin:0;
 }
 
-#btn-archive{
+.btn-email{
     width:10%;
     display:flex;
     align-items: center;
@@ -45,7 +45,7 @@ p{
     transition: 0.15s;
 }
 
-#btn-archive:hover{
+.btn-email:hover{
     background-color: #007bff;
     color:white;
 }
