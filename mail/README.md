@@ -3,7 +3,7 @@
 
 <h2>Project 3: Mail</h2>
 
-<b>Project status</b> :black_large_square: <code>in progress</code>
+<b>Project status</b> :white_check_mark: <code>Submitted</code>
 
 Design a front-end for an email client that makes API calls to send and receive emails.
 
