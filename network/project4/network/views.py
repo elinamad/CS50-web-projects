@@ -10,7 +10,17 @@ from .models import Posts
 
 
 def index(request):
-    return render(request, "network/index.html")
+    posts = Posts.objects.all().order_by('-date')
+    if posts.exists():
+        return render(request, "network/index.html",{
+            "posts":posts,
+            "request":request
+        })
+    else:
+        return render(request, "network/index.html",{
+            "message":"There are no posts. Be the first !",
+        })
+    
 
 
 def login_view(request):

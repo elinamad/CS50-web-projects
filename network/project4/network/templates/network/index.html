@@ -14,4 +14,30 @@
 
         </form>
     {% endif %}
+    {% if posts %}
+        {% for post in posts %}
+        <div class="box">
+            <div class="postsection">
+                <a class="user" href="">{{post.username}}<a>
+                <p>on {{post.date}}</p>
+            </div>
+            <h4>{{post.post}}</h4>
+            <div class="postsection">
+                <a class="postitem">
+                    <span class="material-symbols-outlined">Favorite</span>
+                </a>
+                <p>{{post.likes}} likes</p>
+                {% if request.user.username == post.username.username %}
+                    <a class="postitem" href="">Edit</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+    <div class="box">
+        <h4>{{message}}</h4>
+    </div>
+    {% endif %}
+
+
 {% endblock %}
