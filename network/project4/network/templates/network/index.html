@@ -1,5 +1,17 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-    TODO
+    {% if user.is_authenticated %}
+        <form action="{% url 'newpost' %}" method="post">
+            {% csrf_token %}
+            <div class ="box">
+                <h3>New post</h2>
+                <div class="form-group">
+                    <textarea class="form-control" name="post"></textarea>    
+                </div>
+                <input type="submit" class="btn btn-primary" value="Post"></input>
+            </div>
+
+        </form>
+    {% endif %}
 {% endblock %}
