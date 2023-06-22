@@ -18,17 +18,22 @@
         {% for post in posts %}
         <div class="box">
             <div class="postsection">
-                <a class="user" href="">{{post.username}}<a>
+                {% if request.user.username == post.username.username %}
+                    <a class="user" href="{% url 'profile' name=post.username.username %}">{{post.username}}(You)<a>
+                {% else %}
+                    <a class="user" href="{% url 'profile' name=post.username.username %}">{{post.username}}<a>
+                {% endif %}
                 <p>on {{post.date}}</p>
             </div>
             <h4>{{post.post}}</h4>
             <div class="postsection">
-                <a class="postitem">
-                    <span class="material-symbols-outlined">Favorite</span>
+                <a>
+                    <span id="{{post.id}}" class="material-symbols-outlined likebtn">Favorite</span>
                 </a>
                 <p>{{post.likes}} likes</p>
                 {% if request.user.username == post.username.username %}
                     <a class="postitem" href="">Edit</a>
+                    <a class="postitem" href="">Delete</a>
                 {% endif %}
             </div>
         </div>
@@ -37,6 +42,10 @@
     <div class="box">
         <h4>{{message}}</h4>
     </div>
+        {% if not user.is_authenticated %}
+            <a class="btn btn-primary" href="{% url 'login' %}">Log in </a>
+            <a class="btn btn-primary" href="{% url 'register' %}">Register</a>
+        {% endif %}
     {% endif %}
 
 

@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 
@@ -88,3 +88,12 @@ def newpost(request):
 
         postdata.save()
         return HttpResponseRedirect(reverse("index"))
+
+def profile(request,name):
+    profile_user = get_object_or_404(User, username = name)
+    posts = Posts.objects.filter(username__username=profile_user).order_by('-date')
+    return render(request,"network/profile.html",{
+        "profile_user":profile_user,
+        "posts":posts,
+        "message":"This user has no posts"
+    })

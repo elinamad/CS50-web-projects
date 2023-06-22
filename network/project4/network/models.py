@@ -11,6 +11,10 @@ class Posts(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     post = models.TextField()
     likes = models.IntegerField()
+    likers = models.ManyToManyField(User,blank=True,related_name="liked")
 
     def __str__(self):
         return f'post by {self.username}, on {self.date}: "{self.post}"'
+    
+
+    
