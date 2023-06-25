@@ -1,0 +1,24 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+    <h4>Follower posts</h4>
+    {% if following %}
+        {% for follow in following %}
+            <div class="box">
+                <div class="postsection">
+                    <a class="user" href="{% url 'profile' name=follow.username.username %}">{{follow.username}}</a>
+                    <p>on {{follow.date}}</p>
+                </div>
+                <h4>{{follow.post}}</h4>
+                <div class="postsection">
+                    <a>
+                        <span id="{{post.id}}" class="material-symbols-outlined likebtn">Favorite</span>
+                    </a>
+                    <p>{{follow.likes}} likes</p>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <h4>No posts from followers</h4>
+    {% endif %}
+{% endblock %}

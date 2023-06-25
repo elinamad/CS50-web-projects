@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render,get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from itertools import chain
 
 from .models import User
 from .models import Posts
@@ -124,12 +125,24 @@ def follow(request,id):
 
 @login_required(login_url="/login")
 def unfollow(request,id):
-    
     currentUser = request.user
     unfollow = User.objects.get(pk=id)
     user_instance = Follow.objects.filter(user=currentUser).first()
     user_instance.follows.remove(unfollow)
     return HttpResponseRedirect(reverse("profile",args=(unfollow.username, )))
+
+@login_required(login_url="/login")
+def following(request):
+    currentUser = request.user.id
+    following = Follow.objects.filter(user=currentUser)
+    following_users_ids = list(chain.from_iterable([follow.follows.all() for follow in following]))
+    following_posts = Posts.objects.filter(username__in=following_users_ids)
+    return render(request,"network/following.html",{
+        'current_user':currentUser,
+        'following':following_posts
+    })
+
+
 
 
         
