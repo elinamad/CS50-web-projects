@@ -10,7 +10,19 @@
         <div class="horizontal-box">
         {% if user.is_authenticated %}
             {% if request.user.username != profile_user.username %}
-                <button id="follow" class="btn btn-primary">Follow</button>
+
+            {% if not isfollowing %}
+            <form action="{% url 'follow' id=profile_user.id %}",method="post">
+                {% csrf_token %}
+                <input type="submit" id="follow" class="btn btn-primary" value="Follow">
+            </form>
+            {% else %}
+            <form action="{% url 'unfollow' id=profile_user.id %}",method="post">
+                {% csrf_token %}
+                <input type="submit" id="unfollow" class="btn btn-primary" value="Unfollow">
+            </form>
+            {% endif %}
+
             {% endif %}
         {% endif %}
             <h5>0 Followers</h5>

@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 
 from .models import User
 from .models import Posts
+from .models import Follow
 
 
 def index(request):
@@ -92,8 +93,47 @@ def newpost(request):
 def profile(request,name):
     profile_user = get_object_or_404(User, username = name)
     posts = Posts.objects.filter(username__username=profile_user).order_by('-date')
+    currentUser = request.user
+    isFollowing = False
+    user_instance = Follow.objects.filter(user=currentUser).first()
+    if user_instance:
+        if user_instance.follows.filter(pk=profile_user.pk):
+            isFollowing = True
+        else:
+            isFollowing = False
+
     return render(request,"network/profile.html",{
         "profile_user":profile_user,
         "posts":posts,
-        "message":"This user has no posts"
+        "message":"This user has no posts",
+        "isfollowing":isFollowing
     })
+
+
+@login_required(login_url="/login")
+def follow(request,id):
+    currentUser = request.user
+    follow = User.objects.get(pk=id)
+    existing_user_instance = Follow.objects.filter(user=currentUser).first()
+    if existing_user_instance:
+        existing_user_instance.follows.add(follow)
+    else:
+        follow_instance = Follow.objects.create(user=currentUser)
+        follow_instance.follows.set([follow])
+    return HttpResponseRedirect(reverse("profile",args=(follow.username, )))
+
+@login_required(login_url="/login")
+def unfollow(request,id):
+    
+    currentUser = request.user
+    unfollow = User.objects.get(pk=id)
+    user_instance = Follow.objects.filter(user=currentUser).first()
+    user_instance.follows.remove(unfollow)
+    return HttpResponseRedirect(reverse("profile",args=(unfollow.username, )))
+
+
+        
+            
+
+    
+

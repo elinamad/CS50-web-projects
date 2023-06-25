@@ -17,4 +17,9 @@ class Posts(models.Model):
         return f'post by {self.username}, on {self.date}: "{self.post}"'
     
 
-    
+class Follow(models.Model):
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name="followers")
+    follows = models.ManyToManyField(User,related_name="following")
+
+    def __str__(self):
+        return f'{self.user}'
