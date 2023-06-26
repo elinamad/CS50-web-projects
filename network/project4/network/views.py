@@ -96,6 +96,10 @@ def profile(request,name):
     posts = Posts.objects.filter(username__username=profile_user).order_by('-date')
     currentUser = request.user
     isFollowing = False
+    followers_count = profile_user.followers_count
+    following_count = profile_user.following_count
+    
+
     user_instance = Follow.objects.filter(user=currentUser).first()
     if user_instance:
         if user_instance.follows.filter(pk=profile_user.pk):
@@ -107,7 +111,9 @@ def profile(request,name):
         "profile_user":profile_user,
         "posts":posts,
         "message":"This user has no posts",
-        "isfollowing":isFollowing
+        "isfollowing":isFollowing,
+        "followers_count":followers_count,
+        "following_count":following_count
     })
 
 
@@ -118,9 +124,17 @@ def follow(request,id):
     existing_user_instance = Follow.objects.filter(user=currentUser).first()
     if existing_user_instance:
         existing_user_instance.follows.add(follow)
+        
     else:
         follow_instance = Follow.objects.create(user=currentUser)
         follow_instance.follows.set([follow])
+
+    follow.followers_count = follow.followers_count + 1
+    follow.save()
+       
+    currentUser.following_count = currentUser.following_count + 1
+    currentUser.save()
+
     return HttpResponseRedirect(reverse("profile",args=(follow.username, )))
 
 @login_required(login_url="/login")
@@ -129,6 +143,12 @@ def unfollow(request,id):
     unfollow = User.objects.get(pk=id)
     user_instance = Follow.objects.filter(user=currentUser).first()
     user_instance.follows.remove(unfollow)
+
+    unfollow.followers_count = unfollow.followers_count - 1
+    unfollow.save()
+
+    currentUser.following_count = currentUser.following_count - 1
+    currentUser.save()
     return HttpResponseRedirect(reverse("profile",args=(unfollow.username, )))
 
 @login_required(login_url="/login")
