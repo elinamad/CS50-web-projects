@@ -1,6 +1,6 @@
 <h2>Project 4: Network</h2>
 
-<b>Project status</b> :black_large_square: <code>not started</code>
+<b>Project status</b> :black_large_square: <code>In progress</code>
 
 Design a Twitter-like social network website for making posts and following users.
 
