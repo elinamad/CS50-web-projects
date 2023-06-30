@@ -1,11 +1,12 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
     {% if user.is_authenticated %}
         <form action="{% url 'newpost' %}" method="post">
             {% csrf_token %}
             <div class ="box">
-                <h3>New post</h2>
+                <h3>New post</h3>
                 <div class="form-group">
                     <textarea class="form-control" name="post"></textarea>    
                 </div>
@@ -19,19 +20,23 @@
         <div class="box">
             <div class="postsection">
                 {% if request.user.username == post.username.username %}
-                    <a class="user" href="{% url 'profile' name=post.username.username %}">{{post.username}}(You)<a>
+                    <a class="user" href="{% url 'profile' name=post.username.username %}">{{post.username}}(You)</a>
                 {% else %}
-                    <a class="user" href="{% url 'profile' name=post.username.username %}">{{post.username}}<a>
+                    <a class="user" href="{% url 'profile' name=post.username.username %}">{{post.username}}</a>
                 {% endif %}
                 <p>on {{post.date}}</p>
             </div>
             <h4>{{post.post}}</h4>
             <div class="postsection">
-                <a>
-                    <span id="{{post.id}}" class="material-symbols-outlined likebtn">Favorite</span>
-                </a>
-                <p>{{post.likes}} likes</p>
-                {% if request.user.username == post.username.username %}
+                {% if user.is_authenticated %}
+                {% if post.id in likedposts %}
+                <img class="likeicon" data-post="{{post.id}}" id="{{post.id}}" onclick = "likehandler({{post.id}},{{likedposts}})" src="{% static 'network/liked.svg' %}"/>
+                {% else %}
+                <img class="likeicon" data-post="{{post.id}}" id = "{{post.id}}" onclick="likehandler({{post.id}},{{likedposts}})" src="{% static 'network/like.svg' %}"/>
+                {% endif %}
+                {% endif %}
+                <p id="{{post.id}}-likes">{{post.likes}}</p> <p>likes</p>
+                {% if request.user.username == post.username.ausername %}
                     <a class="postitem" href="">Edit</a>
                     <a class="postitem" href="">Delete</a>
                 {% endif %}
@@ -47,6 +52,5 @@
             <a class="btn btn-primary" href="{% url 'register' %}">Register</a>
         {% endif %}
     {% endif %}
-
 
 {% endblock %}

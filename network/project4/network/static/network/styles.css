@@ -21,24 +21,10 @@
     margin-right:1rem;
 }
 
-.material-symbols-outlined {
-  margin-right:1rem;
-  cursor:pointer;  
-  font-variation-settings:
-  'FILL' 0,
-  'wght' 400,
-  'GRAD' 0,
-  'opsz' 48
-}
 
-.material-symbols-outlined .liked{
+.likeicon{
     margin-right:1rem;
     cursor:pointer;
-    font-variation-settings:
-    'FILL' 1,
-    'wght' 400,
-    'GRAD' 0,
-    'opsz' 48
   }
 
 .postitem{

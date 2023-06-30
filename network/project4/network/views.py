@@ -5,18 +5,29 @@ from django.shortcuts import render,get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from itertools import chain
+import json
+from django.http import JsonResponse
 
 from .models import User
 from .models import Posts
 from .models import Follow
+from .models import Like
 
-
+likedPosts = []
 def index(request):
+    currentUser = request.user
+    likedPosts.clear()
     posts = Posts.objects.all().order_by('-date')
+    likes = Like.objects.all()
+    
+    for like in likes:
+        if like.user.id == currentUser.id:
+            likedPosts.append(like.post.id)
     if posts.exists():
         return render(request, "network/index.html",{
             "posts":posts,
-            "request":request
+            "request":request,
+            "likedposts":likedPosts
         })
     else:
         return render(request, "network/index.html",{
@@ -161,6 +172,37 @@ def following(request):
         'current_user':currentUser,
         'following':following_posts
     })
+
+
+
+@login_required(login_url="/login")
+def addlike(request,id):
+    post = Posts.objects.get(pk=id)
+    user = request.user
+    newlike = Like(user=user,post=post)
+    newlike.save()
+    post.likes = post.likes + 1
+    post.save()
+    likedPosts.append(id)
+
+    return JsonResponse({"message":"Like added"})
+
+@login_required(login_url="/login")
+def removelike(request,id):
+    post = Posts.objects.get(pk=id)
+    user = request.user
+    like = Like.objects.filter(user=user,post=post)
+    like.delete()
+    post.likes = post.likes - 1
+    post.save()
+    if id in likedPosts:
+        likedPosts.remove(id)
+    return JsonResponse({"message":"Like removed"})
+
+def getlikedposts(request):
+    return JsonResponse({'likedposts':likedPosts})  
+
+
 
 
 
