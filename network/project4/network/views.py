@@ -105,12 +105,18 @@ def newpost(request):
 def profile(request,name):
     profile_user = get_object_or_404(User, username = name)
     posts = Posts.objects.filter(username__username=profile_user).order_by('-date')
+    likes = Like.objects.all()
+    likedPosts.clear()
     currentUser = request.user
     isFollowing = False
     followers_count = profile_user.followers_count
     following_count = profile_user.following_count
-    
 
+    for like in likes:
+        if like.user.id == currentUser.id:
+            likedPosts.append(like.post.id)
+
+    
     user_instance = Follow.objects.filter(user=currentUser).first()
     if user_instance:
         if user_instance.follows.filter(pk=profile_user.pk):
@@ -124,7 +130,8 @@ def profile(request,name):
         "message":"This user has no posts",
         "isfollowing":isFollowing,
         "followers_count":followers_count,
-        "following_count":following_count
+        "following_count":following_count,
+        "likedposts":likedPosts
     })
 
 
@@ -165,12 +172,18 @@ def unfollow(request,id):
 @login_required(login_url="/login")
 def following(request):
     currentUser = request.user.id
+    likedPosts.clear()
     following = Follow.objects.filter(user=currentUser)
     following_users_ids = list(chain.from_iterable([follow.follows.all() for follow in following]))
     following_posts = Posts.objects.filter(username__in=following_users_ids)
+    likes = Like.objects.all()
+    for like in likes:
+        if like.user.id == currentUser:
+            likedPosts.append(like.post.id)
     return render(request,"network/following.html",{
         'current_user':currentUser,
-        'following':following_posts
+        'following':following_posts,
+        'likedposts':likedPosts
     })
 
 

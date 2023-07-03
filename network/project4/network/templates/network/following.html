@@ -1,4 +1,5 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
     <h4>Follower posts</h4>
@@ -11,10 +12,14 @@
                 </div>
                 <h4>{{follow.post}}</h4>
                 <div class="postsection">
-                    <a>
-                        <span id="{{post.id}}" class="material-symbols-outlined likebtn">Favorite</span>
-                    </a>
-                    <p>{{follow.likes}} likes</p>
+                {% if user.is_authenticated %}
+                    {% if follow.id in likedposts %}
+                        <img class="likeicon" data-post="{{follow.id}}" id="{{follow.id}}" onclick = "likehandler({{follow.id}},{{likedposts}})" src="{% static 'network/liked.svg' %}"/>
+                    {% else %}
+                        <img class="likeicon" data-post="{{follow.id}}" id = "{{follow.id}}" onclick="likehandler({{follow.id}},{{likedposts}})" src="{% static 'network/like.svg' %}"/>
+                    {% endif %}
+                {% endif %}
+                <p id="{{follow.id}}-likes">{{follow.likes}}</p> <p>likes</p>
                 </div>
             </div>
         {% endfor %}
