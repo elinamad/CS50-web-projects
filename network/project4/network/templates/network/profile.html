@@ -50,7 +50,7 @@
                         {% endif %}
                         <p id="{{post.id}}-likes">{{post.likes}}</p><p>likes</p>
                         {% if request.user.username == post.username.username %}
-                            <a class="postitem" onclick="edit({{post.id}})">Edit</a>
+                            <a class="postitem" onclick = "edit({{post.id}})">Edit</a>
                         {% endif %}
                     </div>
                 </div>

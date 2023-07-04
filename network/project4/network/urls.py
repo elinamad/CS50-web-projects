@@ -16,5 +16,6 @@ urlpatterns = [
     path("addlike/<int:id>",views.addlike,name="addlike"),
     path("removelike/<int:id>",views.removelike,name="addlike"),
     path("getlikedposts",views.getlikedposts,name="getlikedposts"),
-    path("edit/<int:id>",views.edit,name="edit")
+    path("edit/<int:id>",views.edit,name="edit"),
+    path("profile/edit/<int:id>",views.edit,name="edit"),
 ]
