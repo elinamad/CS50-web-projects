@@ -64,9 +64,58 @@ function likehandler(id,likedposts){
             
         }
     })
-
-
-    
-    
+  
 }
+function getCookie(name){
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if(parts.length == 2) return parts.pop().split(';').shift();
+}
+
+function edit(id){
+    fetch(`edit/${id}`)
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        let content = document.getElementById(`content-${id}`);
+        content.innerHTML = "";
+        const input = document.createElement('form');
+        input.className = "form-group";
+        content.append(input);
+        const textarea = document.createElement("textarea");
+        textarea.className = "form-control";
+        textarea.value = result.post;
+        input.append(textarea);
+        const apply = document.createElement("p");
+        apply.classList.add("btn");
+        apply.classList.add("btn-primary");
+        apply.innerHTML ="Apply changes";
+        input.append(apply);
+        input.append(textarea);
+        apply.addEventListener('click',function(){
+            let newpost = textarea.value
+            const csrftoken = getCookie('csrftoken')
+            fetch(`edit/${id}`,{
+                method:'PUT',
+                headers: {"content-type":"application/json","X-CSRFToken":csrftoken},
+                body: JSON.stringify({
+                    post:newpost
+                })
+            })
+            .then(response => response.json())
+            .then(result =>{
+                console.log(result)
+            })
+            content.innerHTML = "";
+            const posttext = document.createElement("h4");
+            posttext.innerHTML = newpost;
+            content.append(posttext);
+        })
+    })
+
+    
+
+
+}
+
 

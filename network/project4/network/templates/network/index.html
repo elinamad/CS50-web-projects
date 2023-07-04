@@ -26,7 +26,9 @@
                 {% endif %}
                 <p>on {{post.date}}</p>
             </div>
-            <h4>{{post.post}}</h4>
+            <div class="content" id ="content-{{post.id}}">
+                <h4>{{post.post}}</h4>
+            </div>
             <div class="postsection">
                 {% if user.is_authenticated %}
                 {% if post.id in likedposts %}
@@ -36,9 +38,8 @@
                 {% endif %}
                 {% endif %}
                 <p id="{{post.id}}-likes">{{post.likes}}</p> <p>likes</p>
-                {% if request.user.username == post.username.ausername %}
-                    <a class="postitem" href="">Edit</a>
-                    <a class="postitem" href="">Delete</a>
+                {% if request.user.username == post.username.username %}
+                    <a class="postitem"  onclick = "edit({{post.id}})">Edit</a>
                 {% endif %}
             </div>
         </div>

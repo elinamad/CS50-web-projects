@@ -215,6 +215,23 @@ def removelike(request,id):
 def getlikedposts(request):
     return JsonResponse({'likedposts':likedPosts})  
 
+@login_required(login_url="/login")
+def edit(request, id):
+    post = Posts.objects.get(pk=id)
+    currentUser = request.user
+    postUser = post.username
+    if currentUser.id == postUser.id:
+        if request.method == 'PUT':
+            post_data = json.loads(request.body)
+            updated_post = post_data.get('post')
+            post.post = updated_post
+            post.save()
+            return JsonResponse({"message": "post updated"})
+        else:
+            return JsonResponse({"post": post.post})
+    else:
+        return JsonResponse({"message": "Invalid request"})
+
 
 
 
