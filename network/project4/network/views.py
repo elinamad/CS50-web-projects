@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from itertools import chain
 import json
 from django.http import JsonResponse
+from django.core.paginator import Paginator
 
 from .models import User
 from .models import Posts
@@ -19,13 +20,21 @@ def index(request):
     likedPosts.clear()
     posts = Posts.objects.all().order_by('-date')
     likes = Like.objects.all()
+
+    #pagination
+    paginator = Paginator(posts,10)
+    pagenum = request.GET.get('page')
+    page_posts = paginator.get_page(pagenum)
+
     
     for like in likes:
         if like.user.id == currentUser.id:
             likedPosts.append(like.post.id)
+
     if posts.exists():
         return render(request, "network/index.html",{
             "posts":posts,
+            "page_posts":page_posts,
             "request":request,
             "likedposts":likedPosts
         })
@@ -112,6 +121,11 @@ def profile(request,name):
     followers_count = profile_user.followers_count
     following_count = profile_user.following_count
 
+    #pagination
+    paginator = Paginator(posts,10)
+    pagenum = request.GET.get('page')
+    page_posts = paginator.get_page(pagenum)
+
     for like in likes:
         if like.user.id == currentUser.id:
             likedPosts.append(like.post.id)
@@ -127,6 +141,7 @@ def profile(request,name):
     return render(request,"network/profile.html",{
         "profile_user":profile_user,
         "posts":posts,
+        "page_posts":page_posts,
         "message":"This user has no posts",
         "isfollowing":isFollowing,
         "followers_count":followers_count,
